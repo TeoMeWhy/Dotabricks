@@ -76,5 +76,5 @@ mode = dbutils.widgets.get("mode")
 if mode == "new":
     get_new_pro_matches()
 
-elif args.mode == "history":
+elif mode == "history":
     get_history_pro_matches()
