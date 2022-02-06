@@ -22,19 +22,31 @@ def get_data(**kwargs):
     return response.json()
 
 def get_min_match_id(df):
-    min_match_id = df.groupBy().agg(F.min("match_id")).collect()[0][0]
+    min_match_id = (df.groupBy()
+                      .agg(F.min("match_id"))
+                      .collect()[0][0])
     return min_match_id
 
 def get_max_date(df):
-    max_date = df.withColumn("match_date", F.from_unixtime("start_time")).groupBy().agg( F.date_add(F.max(F.col("match_date")),-1)).collect()[0][0]
+    max_date = (df.withColumn("match_date", F.from_unixtime("start_time"))
+                  .groupBy()
+                  .agg(F.date_add(F.max(F.col("match_date")),-1))
+                  .collect()[0][0])
     return max_date
 
 def get_min_date(df):
-    min_date = df.withColumn("match_date", F.from_unixtime("start_time")).groupBy().agg( F.date_add(F.min(F.col("match_date")),-1)).collect()[0][0]
+    min_date = (df.withColumn("match_date", F.from_unixtime("start_time"))
+                  .groupBy()
+                  .agg(F.date_add(F.min(F.col("match_date")),-1))
+                  .collect()[0][0])
     return min_date
 
 def save_match_list(df):
-    df.coalesce(1).write.format("json").mode("append").save("/mnt/datalake/raw/pro_matches_history")
+    (df.coalesce(1)
+       .write
+       .format("json")
+       .mode("append")
+       .save("/mnt/datalake/raw/pro_matches_history"))
     
 def get_and_save(**kwargs):
     data = get_data(**kwargs) # obtem partidas novas a partir da partida mais antiga
@@ -44,8 +56,7 @@ def get_and_save(**kwargs):
 
 def get_history_pro_matches(**kwargs):
     df = spark.read.format("json").load("/mnt/datalake/raw/pro_matches_history") # lê os dados do datalake
-    df_new = get_min_match_id(df) # Pega partida mais antiga do nosso datalake
-    min_match_id = get_min_match_id(df_new)
+    min_match_id = get_min_match_id(df)
     while min_match_id is not None:
         
         print(min_match_id)
