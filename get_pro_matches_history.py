@@ -11,14 +11,8 @@ def get_data(**kwargs):
     less_than_match_id: int
     api_key: str
     '''
-    
     url = "https://api.opendota.com/api/proMatches"
-    
-    params = "&".join([f"{k}={v}" for k,v in kwargs.items()])
-    if params != "":
-        url += "?" + params
-
-    response = requests.get(url)
+    response = requests.get(url, params=kwargs)
     return response.json()
 
 def get_min_match_id(df):
