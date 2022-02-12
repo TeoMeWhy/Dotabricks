@@ -72,7 +72,9 @@ def get_new_pro_matches(**kwargs):
     print(min_match_id)
     while max_date <= date_process:
         df_new = get_and_save(less_than_match_id=min_match_id)
+        date_process = get_min_date(df_new)
         min_match_id = get_min_match_id(df_new)
+        print(min_match_id)
 
 # COMMAND ----------
 
