@@ -7,8 +7,8 @@ from delta.tables import *
 
 # COMMAND ----------
 
-dbutils.fs.rm(BRONZE_FILES, True)
-dbutils.fs.rm(CHECKPOINT_FILES, True)
+# dbutils.fs.rm(BRONZE_FILES, True)
+# dbutils.fs.rm(CHECKPOINT_FILES, True)
 
 # COMMAND ----------
 
