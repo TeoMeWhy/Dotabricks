@@ -38,7 +38,7 @@ def get_and_land_match_details(match_id):
 def get_pro_matches_ids():
     df_history = spark.read.format("delta").load("/mnt/datalake/bronze/pro_matches_history")
     
-    if "pro_matches_proceeded" in [i.name.strip("/") for i in dbutils.fs.ls("/mnt/datalake/raw/")]
+    if "pro_matches_proceeded" in [i.name.strip("/") for i in dbutils.fs.ls("/mnt/datalake/raw/")]:
         print("Verificando partidas coletadas")
         
         df_proceeded = ( spark.read

@@ -100,8 +100,11 @@ MATCH_PLAYERS_SCHEMA = StructType([StructField("match_id", LongType(), True),
                                     StructField("item_5", LongType(), True),
                                     StructField("item_neutral", LongType(), True),
                                     StructField("kill_streaks", StructType([
+                                        StructField("1", LongType(), True),
+                                        StructField("2", LongType(), True),
                                         StructField("3", LongType(), True),
                                         StructField("4", LongType(), True),
+                                        StructField("5", LongType(), True),
                                         ]),True),
                                     StructField("kills", LongType(),True),
                                     StructField("last_hits", LongType(),True),
@@ -182,7 +185,7 @@ def save_match_df(data):
     
 def save_match_chat_df(data):
       
-    if len(data["chat"]) > 0:
+    if data["chat"] != None and len(data["chat"]) > 0:
         df = spark.createDataFrame(data["chat"])
         df = df.withColumn("match_id", F.lit(data["match_id"]) )
         save_data(df, "tb_pro_match_chat")
@@ -193,14 +196,16 @@ def save_match_picks_bans(data):
         save_data(df, "tb_pro_match_picks_bans")
 
 def save_radiant_gold_adv_df(data):
-    data_new = [ {"value": i, "match_id":data["match_id"]} for i in data["radiant_gold_adv"] ]
-    df = spark.createDataFrame(data_new)
-    save_data(df, "tb_pro_match_radiant_gold_adv")
+    if data["radiant_gold_adv"] != None:
+        data_new = [ {"value": i, "match_id":data["match_id"]} for i in data["radiant_gold_adv"] ]
+        df = spark.createDataFrame(data_new)
+        save_data(df, "tb_pro_match_radiant_gold_adv")
 
 def save_radiant_xp_adv_df(data):
-    data_new = [ {"value": i, "match_id":data["match_id"]} for i in data["radiant_xp_adv"] ]
-    df = spark.createDataFrame(data_new)
-    save_data(df, "tb_pro_match_radiant_xp_adv")
+    if data["radiant_xp_adv"] != None:
+        data_new = [ {"value": i, "match_id":data["match_id"]} for i in data["radiant_xp_adv"] ]
+        df = spark.createDataFrame(data_new)
+        save_data(df, "tb_pro_match_radiant_xp_adv")
 
 def save_match_player_df(data):
     df = spark.createDataFrame(data["players"], schema=MATCH_PLAYERS_SCHEMA)
