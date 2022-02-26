@@ -12,7 +12,7 @@ from delta.tables import *
 
 # COMMAND ----------
 
-TABLE_NAME = "tb_pro_matches_players"
+TABLE_NAME = dbutils.widgets.get("table")
 
 RAW_FILES = f"/mnt/datalake/raw/{TABLE_NAME}"
 BRONZE_FILES = f"/mnt/datalake/bronze/dota/{TABLE_NAME}"
