@@ -36,7 +36,7 @@ def get_and_land_match_details(match_id):
             print("O arquivo já existe")
             
 def get_pro_matches_ids():
-    df_history = spark.read.format("delta").load("/mnt/datalake/bronze/pro_matches_history")
+    df_history = spark.read.json("/mnt/datalake/raw/pro_matches_history")
     
     if "pro_matches_proceeded" in [i.name.strip("/") for i in dbutils.fs.ls("/mnt/datalake/raw/")]:
         print("Verificando partidas coletadas")
@@ -59,3 +59,7 @@ match_ids = get_pro_matches_ids()
 
 for i in tqdm(match_ids.collect()):
     get_and_land_match_details(i[0])
+
+# COMMAND ----------
+
+
