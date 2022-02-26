@@ -7,12 +7,13 @@ from delta.tables import *
 
 # COMMAND ----------
 
-# dbutils.fs.rm(BRONZE_FILES, True)
-# dbutils.fs.rm(CHECKPOINT_FILES, True)
+dbutils.fs.rm(BRONZE_FILES, True)
+dbutils.fs.rm(CHECKPOINT_FILES, True)
 
 # COMMAND ----------
 
 TABLE_NAME = dbutils.widgets.get("table")
+print(TABLE_NAME)
 
 RAW_FILES = f"/mnt/datalake/raw/{TABLE_NAME}"
 BRONZE_FILES = f"/mnt/datalake/bronze/dota/{TABLE_NAME}"
@@ -228,3 +229,10 @@ stream = (df_stream.writeStream
                    .outputMode("update")
                    .start() 
          )
+
+# COMMAND ----------
+
+stream.processAllAvailable()
+stream.stop()
+
+bronzeDeltaTable.vacuum()
