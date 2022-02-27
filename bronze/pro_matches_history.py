@@ -6,13 +6,13 @@ from delta.tables import *
 
 # COMMAND ----------
 
-TABLE_NAME = "pro_matches_history"
+TABLE_NAME = "tb_pro_matches_history"
 
-tables = [i.name.strip("/") for i in dbutils.fs.ls("/mnt/datalake/bronze")]
+tables = [i.name.strip("/") for i in dbutils.fs.ls("/mnt/datalake/bronze/dota")]
 
 if TABLE_NAME not in tables:
     print("Realizando a primeira carga em bronze")
-    df = spark.read.format("json").load(f"/mnt/datalake/raw/{TABLE_NAME}/")
+    df = spark.read.format("json").load(f"/mnt/datalake/raw/pro_matches_history")
     windowSpec  = window.Window.partitionBy("match_id").orderBy("start_time")
     df_new = ( df.withColumn("row_number",F.row_number().over(windowSpec))
                  .filter("row_number = 1"))
@@ -40,7 +40,7 @@ stream_schema = StructType([StructField("dire_name",StringType(),True),
 
 # COMMAND ----------
 
-bronzeDeltaTable = DeltaTable.forPath(spark, f"/mnt/datalake/bronze/{TABLE_NAME}")
+bronzeDeltaTable = DeltaTable.forPath(spark, f"/mnt/datalake/bronze/dota/{TABLE_NAME}")
 
 def upsertToDelta(df, batchId):
     windowSpec  = window.Window.partitionBy("match_id").orderBy("start_time")
@@ -57,11 +57,11 @@ df_stream = ( spark.readStream
                    .format('cloudFiles')
                    .option('cloudFiles.format', 'json')
                    .schema(stream_schema)
-                   .load(f"/mnt/datalake/raw/{TABLE_NAME}/") )
+                   .load(f"/mnt/datalake/raw/pro_matches_history/") )
 
 stream = (df_stream.writeStream
                    .foreachBatch(upsertToDelta)
-                   .option('checkpointLocation', f"/mnt/datalake/bronze/{TABLE_NAME}_checkpoint")
+                   .option('checkpointLocation', f"/mnt/datalake/bronze/dota/{TABLE_NAME}_checkpoint")
                    .outputMode("update")
                    .start() 
          )
