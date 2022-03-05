@@ -44,9 +44,12 @@ def save_match_list(df):
     
 def get_and_save(**kwargs):
     data = get_data(**kwargs) # obtem partidas novas a partir da partida mais antiga
-    df = spark.createDataFrame(data) # transforma em df spark
-    save_match_list(df) # salva os dados em modo append
-    return df
+    if len(data) != 0:
+        df = spark.createDataFrame(data) # transforma em df spark
+        save_match_list(df) # salva os dados em modo append
+        return df
+    else:
+        return None
 
 def get_history_pro_matches(**kwargs):
     df = spark.read.format("json").load("/mnt/datalake/raw/pro_matches_history") # lê os dados do datalake
@@ -54,13 +57,12 @@ def get_history_pro_matches(**kwargs):
     while min_match_id is not None:
         
         print(min_match_id)
-        try:
-            df_new = get_and_save(less_than_match_id=min_match_id, **kwargs)
-            min_match_id = get_min_match_id(df_new)
-        
-        except AnalysisException as err:
-            print(err)
+        df_new = get_and_save(less_than_match_id=min_match_id, **kwargs)
+        if df_new == None:
             break
+        min_match_id = get_min_match_id(df_new)
+        
+    print("Coleta finalizada!")
             
 def get_new_pro_matches(**kwargs):
     df = spark.read.format("json").load("/mnt/datalake/raw/pro_matches_history") # lê os dados do datalake
