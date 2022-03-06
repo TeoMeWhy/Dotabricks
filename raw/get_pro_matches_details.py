@@ -21,7 +21,7 @@ def get_data(match_id, **kwargs):
     return response.json()
 
 def get_and_land_match_details(match_id):
-    path = f"/mnt/datalake/raw/pro_matches_landing/{match_id}.json"
+    path = f"/mnt/datalake/raw/dota/pro_matches_landing/{match_id}.json"
     data = get_data(match_id=match_id, api_key=API_KEY)
     
     if "match_id" in data:
@@ -39,21 +39,17 @@ def get_and_land_match_details(match_id):
             
 def get_pro_matches_ids():
     
-    match_schema = StructType( [
-        StructField('match_id',LongType(), True),
-    ])
+    match_schema = StructType([StructField('match_id',LongType(), True),])
     
-    df_history = spark.read.json("/mnt/datalake/raw/pro_matches_history").distinct()
+    df_history = spark.read.json("/mnt/datalake/raw/dota/pro_matches_history").distinct()
     
-    if "pro_matches_landing" in [i.name.strip("/") for i in dbutils.fs.ls("/mnt/datalake/raw/")]:
-        print("Verificando partidas coletadas")
+    if "pro_matches_landing" in [i.name.strip("/") for i in dbutils.fs.ls("/mnt/datalake/raw/dota/")]:
         
         df_proceeded = ( spark.read
                               .schema(match_schema)
                               .format("json")
-                              .load("/mnt/datalake/raw/pro_matches_landing") )
-        
-        df_proceeded = df_proceeded.withColumn("flag_proceeded", F.lit(1))
+                              .load("/mnt/datalake/raw/dota/pro_matches_landing")
+                              .withColumn("flag_proceeded", F.lit(1)) )
         
         return ( df_history.join(df_proceeded, "match_id", "left")
                            .filter("flag_proceeded is null")
