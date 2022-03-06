@@ -97,9 +97,7 @@ def get_new_pro_matches(since, **kwargs):
 # COMMAND ----------
 
 API_KEY = dbutils.secrets.get(scope="dota", key="api_key")
-
-# mode = dbutils.widgets.get("mode")
-mode = "new"
+mode = dbutils.widgets.get("mode")
 
 if mode == "new":
     get_new_pro_matches(since=-7,api_key=API_KEY)
