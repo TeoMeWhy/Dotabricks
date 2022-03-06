@@ -46,3 +46,10 @@ Hoje há duas formas de você ser sub no canal:
 Como disse, o conteúdo é gratuíto, mas você pode rever os vídeos sendo um inscrito. Além, é claro, de apoiar este nsso projeto de fomentar o conhecimento.
 
 Para realizar um projeto destes, há custos envolvidos para manter todo ambiente cloud. Assim, os valores adquiridos pelas assinaturas são utilizados para sanar estes custos.
+
+## Relatório de custos
+|Ano/Mês|AWS|Databricks|OpenDota API|
+|-|-|-|-|
+|02.2022|R$293.45 (U$55.98)|U$8.02|R$4,24 (U$0.79)|
+
+- O principal custo da AWS é referente ao serviço de NAT. Como estamos usando máquinas Spot, o custo das máquinas ligadas é mínimo.
