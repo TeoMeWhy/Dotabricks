@@ -53,11 +53,12 @@ def get_pro_matches_ids():
         
         return ( df_history.join(df_proceeded, "match_id", "left")
                            .filter("flag_proceeded is null")
-                           .select("match_id") )
+                           .select("match_id")
+                           .orderBy("match_id", ascending=False) )
 
     else:
         print("Histórico de processo não encontrado")
-        return df_history.select("match_id")
+        return df_history.select("match_id").orderBy("match_id", ascending=False)
 
 # COMMAND ----------
 
