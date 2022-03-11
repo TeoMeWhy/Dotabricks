@@ -1,6 +1,6 @@
 # Dotabricks
 
-Lives criando um Datalake com dados de Dota2 na plataforma [Databricks](http://databricks.com/). Basta acessar: [twitch.tv/teomewhy](twitch.tv/teomewhy)
+Lives criando um Datalake com dados de Dota2 na plataforma [Databricks](http://databricks.com/). Basta acessar: [Twitch.tv/TeoMeWhy](https://www.twitch.tv/teomewhy)
 
 <img src="https://i.ibb.co/FgTsVPv/Solu-es-Data-Lake-Frame-6.jpg" alt="" width="550">
 
