@@ -1,0 +1,36 @@
+{
+    "settings": {
+        "timeout_seconds": 0,
+        "email_notifications": {},
+        "name": "get_pro_matches",
+        "max_concurrent_runs": 1,
+        "tasks": [
+            {
+                "existing_cluster_id": "0208-223626-fdevgxzq",
+                "notebook_task": {
+                    "notebook_path": "/Repos/pipelines/Dotabricks/raw/get_pro_matches_history",
+                    "base_parameters": {
+                        "mode": "new"
+                    }
+                },
+                "timeout_seconds": 0,
+                "email_notifications": {},
+                "task_key": "get_pro_matches_new"
+            },
+            {
+                "existing_cluster_id": "0208-223626-fdevgxzq",
+                "notebook_task": {
+                    "notebook_path": "/Repos/pipelines/Dotabricks/raw/get_pro_matches_details"
+                },
+                "timeout_seconds": 0,
+                "email_notifications": {},
+                "task_key": "get_pro_matches_details",
+                "depends_on": [
+                    {
+                        "task_key": "get_pro_matches_new"
+                    }
+                ]
+            }
+        ]
+    }
+}
