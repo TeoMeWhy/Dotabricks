@@ -86,7 +86,7 @@ def main():
         repo_jobs = process_update(job_id, job_name, repo_jobs, host, token)
 
     for i in repo_jobs:
-        process_create(i, token)
+        process_create(i, host, token)
         
 if __name__ == "__main__":
     main()
