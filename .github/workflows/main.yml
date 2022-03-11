@@ -24,7 +24,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: install databricks
-        run: pip install databricks-cli
+        run: pip install databricks-cli requests
 
       # Runs a set of commands using the runners shell
       - name: make pull on main
@@ -32,3 +32,7 @@ jobs:
         env:
           DATABRICKS_TOKEN: ${{secrets.DATABRICKS_TOKEN}}
           DATABRICKS_HOST: ${{secrets.DATABRICKS_HOST}}
+
+      # Runs a set of commands using the runners shell
+      - name: sync jobs
+        run: python jobs/update_jobs.py --token ${{secrets.DATABRICKS_TOKEN}} --host ${{secrets.DATABRICKS_HOST}}
