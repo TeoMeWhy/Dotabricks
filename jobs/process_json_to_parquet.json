@@ -1,0 +1,20 @@
+{
+    "settings": {
+        "timeout_seconds": 0,
+        "email_notifications": {},
+        "name": "process_json_to_parquet",
+        "max_concurrent_runs": 1,
+        "tasks": [
+            {
+                "existing_cluster_id": "0208-223626-fdevgxzq",
+                "notebook_task": {
+                    "notebook_path": "/Repos/pipelines/Dotabricks/raw/process_json_to_parquet",
+                    "base_parameters": {}
+                },
+                "timeout_seconds": 0,
+                "email_notifications": {},
+                "task_key": "json_to_parquet"
+            }
+        ]
+    }
+}

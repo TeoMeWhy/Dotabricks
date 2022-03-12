@@ -164,7 +164,7 @@ MATCH_SCHEMA = StructType( [StructField('match_id',LongType(), True),
 # COMMAND ----------
 
 def get_data():
-    path = f"/mnt/datalake/raw/pro_matches_landing"
+    path = f"/mnt/datalake/raw/dota/pro_matches_landing"
     return spark.read.schema(MATCH_SCHEMA).json(path)
 
 def save_data(df, tb_name, mode):
@@ -172,7 +172,7 @@ def save_data(df, tb_name, mode):
        .write
        .mode(mode)
        .format("parquet")
-       .save(f"/mnt/datalake/raw/{tb_name}"))
+       .save(f"/mnt/datalake/raw/dota/{tb_name}"))
 
 def etl_match_df(df, drop=[]):
     df_match = df.drop(*drop)
@@ -196,11 +196,11 @@ df_stream = ( spark.readStream
                    .format('cloudFiles')
                    .option('cloudFiles.format', 'json')
                    .schema(MATCH_SCHEMA)
-                   .load("/mnt/datalake/raw/pro_matches_landing") )
+                   .load("/mnt/datalake/raw/dota/pro_matches_landing") )
 
 stream = (df_stream.writeStream
                    .foreachBatch(upsert)
-                   .option('checkpointLocation', f"/mnt/datalake/raw/json_to_parquet_checkpoint")
+                   .option('checkpointLocation', f"/mnt/datalake/raw/dota/process_match_checkpoint")
                    .outputMode("update")
                    .start() 
          )
@@ -208,6 +208,5 @@ stream = (df_stream.writeStream
 # COMMAND ----------
 
 time.sleep(60)
-
 stream.processAllAvailable()
 stream.stop()
