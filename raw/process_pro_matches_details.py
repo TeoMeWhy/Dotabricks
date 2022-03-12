@@ -192,13 +192,6 @@ def upsert(df, batchId):
 
 # COMMAND ----------
 
-def upsert(df, batchId):
-    df_match = etl_match_df(df, ["players"])
-    df_match_player = etl_match_player_df(df)
-    
-    save_data(df_match_player,"tb_pro_matches_players", "append")
-    save_data(df_match,"tb_pro_matches", "append")
-
 df_stream = ( spark.readStream
                    .format('cloudFiles')
                    .option('cloudFiles.format', 'json')
@@ -213,6 +206,8 @@ stream = (df_stream.writeStream
          )
 
 # COMMAND ----------
+
+time.sleep(60)
 
 stream.processAllAvailable()
 stream.stop()
