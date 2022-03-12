@@ -1,0 +1,35 @@
+{
+    "settings": {
+        "timeout_seconds": 0,
+        "email_notifications": {},
+        "name": "bronze_pro_matches_details",
+        "max_concurrent_runs": 1,
+        "tasks": [
+            {
+                "existing_cluster_id": "0219-202351-diwh72l6",
+                "notebook_task": {
+                    "notebook_path": "/Repos/pipelines/Dotabricks/bronze/pro_matches_details",
+                    "base_parameters": {
+                        "table": "tb_pro_matches"
+                    }
+                },
+                "timeout_seconds": 0,
+                "email_notifications": {},
+                "task_key": "tb_pro_matches",
+                "description": ""
+            },
+            {
+                "existing_cluster_id": "0219-202351-diwh72l6",
+                "notebook_task": {
+                    "notebook_path": "/Repos/pipelines/Dotabricks/bronze/pro_matches_details",
+                    "base_parameters": {
+                        "table": "tb_pro_matches_players"
+                    }
+                },
+                "timeout_seconds": 0,
+                "email_notifications": {},
+                "task_key": "tb_pro_matches_players"
+            }
+        ]
+    }
+}
