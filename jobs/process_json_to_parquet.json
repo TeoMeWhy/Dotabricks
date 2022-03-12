@@ -6,7 +6,7 @@
         "max_concurrent_runs": 1,
         "tasks": [
             {
-                "existing_cluster_id": "0208-223626-fdevgxzq",
+                "existing_cluster_id": "0219-202351-diwh72l6",
                 "notebook_task": {
                     "notebook_path": "/Repos/pipelines/Dotabricks/raw/process_json_to_parquet",
                     "base_parameters": {}
