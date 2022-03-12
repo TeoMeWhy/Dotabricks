@@ -1,4 +1,6 @@
 # Databricks notebook source
+import time
+
 from pyspark.sql.types import *
 from pyspark.sql import functions as F
 
