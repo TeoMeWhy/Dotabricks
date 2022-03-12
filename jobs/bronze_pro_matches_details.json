@@ -10,7 +10,9 @@
                 "notebook_task": {
                     "notebook_path": "/Repos/pipelines/Dotabricks/bronze/pro_matches_details",
                     "base_parameters": {
-                        "table": "tb_pro_matches"
+                        "table": "tb_pro_matches",
+                        "id": "match_id",
+                        "date": "start_time"
                     }
                 },
                 "timeout_seconds": 0,
@@ -23,7 +25,9 @@
                 "notebook_task": {
                     "notebook_path": "/Repos/pipelines/Dotabricks/bronze/pro_matches_details",
                     "base_parameters": {
-                        "table": "tb_pro_matches_players"
+                        "table": "tb_pro_matches_players",
+                        "id": "match_id, account_id",
+                        "date": "start_time"
                     }
                 },
                 "timeout_seconds": 0,
