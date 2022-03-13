@@ -8,6 +8,7 @@ import requests
 import time
 from pyspark.sql.types import *
 from pyspark.sql import functions as F
+from delta.tables import *
 
 from tqdm import tqdm
 
@@ -43,12 +44,11 @@ def get_pro_matches_ids():
     
     df_history = spark.read.json("/mnt/datalake/raw/dota/pro_matches_history").distinct()
     
-    if "pro_matches_landing" in [i.name.strip("/") for i in dbutils.fs.ls("/mnt/datalake/raw/dota/")]:
-        
+    if "tb_pro_matches_proceeded" in [i.name.strip("/") for i in dbutils.fs.ls("/mnt/datalake/raw/dota/")]:
+        print("Obtendo histórico do processo...")
         df_proceeded = ( spark.read
-                              .schema(match_schema)
-                              .format("json")
-                              .load("/mnt/datalake/raw/dota/pro_matches_landing")
+                              .format("delta")
+                              .load("/mnt/datalake/raw/dota/tb_pro_matches_proceeded")
                               .withColumn("flag_proceeded", F.lit(1)) )
         
         return ( df_history.join(df_proceeded, "match_id", "left")
@@ -62,7 +62,52 @@ def get_pro_matches_ids():
 
 # COMMAND ----------
 
-match_ids = get_pro_matches_ids()
+table_proceeded = "tb_pro_matches_proceeded"
 
+schema = StructType([
+    StructField("match_id", LongType(), False),
+    StructField("start_time", LongType(), False),
+])
+
+tables = [i.name.strip("/") for i in dbutils.fs.ls("/mnt/datalake/raw/dota")]
+
+if table_proceeded not in tables:
+    df = spark.read.schema(schema).json("/mnt/datalake/raw/dota/pro_matches_landing")
+    df.write.format("delta").save(f"/mnt/datalake/raw/dota/{table_proceeded}")
+
+# COMMAND ----------
+
+bronzeDeltaTable = DeltaTable.forPath(spark, f"/mnt/datalake/raw/dota/{table_proceeded}")
+
+def upsertToDelta(df, batchId):
+    (bronzeDeltaTable.alias("delta") 
+                     .merge(df.alias("raw"), "raw.match_id = delta.match_id") 
+                     .whenNotMatchedInsertAll()
+                     .execute())
+
+df_stream = (spark.readStream
+                  .format('cloudFiles')
+                  .option('cloudFiles.format', 'json')
+                  .schema(schema)
+                  .load("/mnt/datalake/raw/dota/pro_matches_landing"))
+
+stream = (df_stream.writeStream
+                   .foreachBatch(upsertToDelta)
+                   .option('checkpointLocation', "/mnt/datalake/raw/dota/tb_pro_matches_proceeded_checkpoint")
+                   .outputMode("update")
+                   .start())
+
+# COMMAND ----------
+
+match_ids = get_pro_matches_ids()
 for i in tqdm(match_ids.collect()):
     get_and_land_match_details(i[0])
+
+# COMMAND ----------
+
+stream.processAllAvailable()
+stream.stop()
+
+spark.sql("OPTIMIZE delta.`/mnt/datalake/raw/dota/tb_pro_matches_proceeded`")
+
+bronzeDeltaTable.vacuum()
