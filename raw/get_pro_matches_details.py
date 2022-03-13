@@ -19,7 +19,11 @@ API_KEY = dbutils.secrets.get(scope="dota", key="api_key")
 def get_data(match_id, **kwargs):
     url = f"https://api.opendota.com/api/matches/{match_id}"
     response = requests.get(url, params=kwargs)
-    return response.json()
+    try:
+        return response.json()
+    except json.JSONDecodeError as err:
+        print(err)
+        return {}
 
 def get_and_land_match_details(match_id):
     path = f"/mnt/datalake/raw/dota/pro_matches_landing/{match_id}.json"
