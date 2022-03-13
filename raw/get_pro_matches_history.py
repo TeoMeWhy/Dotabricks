@@ -1,8 +1,12 @@
 # Databricks notebook source
+import time
 import datetime
 import requests
 from pyspark.sql import functions as F
 from pyspark.sql.types import *
+from pyspark.sql import window
+
+from delta.tables import *
 
 # COMMAND ----------
 
@@ -68,7 +72,7 @@ def get_and_save(**kwargs):
         return None
 
 def get_history_pro_matches(**kwargs):
-    df = spark.read.format("json").load("/mnt/datalake/raw/dota/pro_matches_history") # lê os dados do datalake
+    df = spark.read.format("delta").load("/mnt/datalake/raw/dota/tb_pro_matches_stored") # lê os dados do datalake
     min_match_id = get_min_match_id(df)
     while min_match_id is not None:
         
@@ -81,7 +85,7 @@ def get_history_pro_matches(**kwargs):
     print("Coleta finalizada!")
             
 def get_new_pro_matches(since, **kwargs):
-    df = spark.read.format("json").load("/mnt/datalake/raw/dota/pro_matches_history") # lê os dados do datalake
+    df = spark.read.format("delta").load("/mnt/datalake/raw/dota/tb_pro_matches_stored") # lê os dados do datalake
     max_date = get_max_date(df, since)        # data da partida mais recente que já foi coletada
     df_new = get_and_save(**kwargs)           # obtem os dados e persiste no lake
     date_process = get_min_date(df_new)       # data da partida mais antiga na iteração
@@ -96,11 +100,63 @@ def get_new_pro_matches(since, **kwargs):
 
 # COMMAND ----------
 
+table_stored = "tb_pro_matches_stored"
+tables = [i.name.strip("/") for i in dbutils.fs.ls("/mnt/datalake/raw/dota")]
+
+if table_stored not in tables:
+    
+    df = spark.read.json("/mnt/datalake/raw/dota/pro_matches_history")
+    
+    windowSpec  = window.Window.partitionBy("match_id").orderBy("start_time")
+    df_new = ( df.withColumn("rn",F.row_number().over(windowSpec))
+                 .filter("rn = 1")
+                 .drop("rn"))
+    
+    df_new.write.format("delta").save(f"/mnt/datalake/raw/dota/{table_stored}")
+    
+
+deltaTable = DeltaTable.forPath(spark, f"/mnt/datalake/raw/dota/{table_stored}")
+
+def upsertToDelta(df, batchId):
+    
+    windowSpec  = window.Window.partitionBy("match_id").orderBy("start_time")
+    df_new = ( df.withColumn("rn",F.row_number().over(windowSpec))
+                 .filter("rn = 1")
+                 .drop("rn"))
+    
+    (deltaTable.alias("delta") 
+               .merge(df_new.alias("raw"), "raw.match_id = delta.match_id") 
+               .whenMatchedUpdateAll()
+               .whenNotMatchedInsertAll()
+               .execute())
+
+df_stream = (spark.readStream
+                  .format('cloudFiles')
+                  .option('cloudFiles.format', 'json')
+                  .schema(schema)
+                  .load("/mnt/datalake/raw/dota/pro_matches_history"))
+
+stream = (df_stream.writeStream
+                   .foreachBatch(upsertToDelta)
+                   .option('checkpointLocation', "/mnt/datalake/raw/dota/tb_pro_matches_stored_checkpoint")
+                   .outputMode("update")
+                   .start())
+
+# COMMAND ----------
+
 API_KEY = dbutils.secrets.get(scope="dota", key="api_key")
 mode = dbutils.widgets.get("mode")
-
 if mode == "new":
     get_new_pro_matches(since=-7,api_key=API_KEY)
 
 elif mode == "history":
     get_history_pro_matches(api_key=API_KEY)
+
+# COMMAND ----------
+
+stream.processAllAvailable()
+stream.stop()
+
+spark.sql("OPTIMIZE delta.`/mnt/datalake/raw/dota/tb_pro_matches_stored`")
+
+deltaTable.vacuum()
