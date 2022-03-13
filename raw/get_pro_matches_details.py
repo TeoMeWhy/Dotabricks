@@ -42,7 +42,11 @@ def get_pro_matches_ids():
     
     match_schema = StructType([StructField('match_id',LongType(), True),])
     
-    df_history = spark.read.json("/mnt/datalake/raw/dota/pro_matches_history").distinct()
+    df_history = (spark.read
+                       .format("delta")
+                       .load("/mnt/datalake/raw/dota/tb_pro_matches_stored")
+                       .select("match_id")
+                       .distinct())
     
     if "tb_pro_matches_proceeded" in [i.name.strip("/") for i in dbutils.fs.ls("/mnt/datalake/raw/dota/")]:
         print("Obtendo histórico do processo...")
@@ -51,10 +55,11 @@ def get_pro_matches_ids():
                               .load("/mnt/datalake/raw/dota/tb_pro_matches_proceeded")
                               .withColumn("flag_proceeded", F.lit(1)) )
         
-        return ( df_history.join(df_proceeded, "match_id", "left")
-                           .filter("flag_proceeded is null")
-                           .select("match_id")
-                           .orderBy("match_id", ascending=False) )
+        return (df_history.join(df_proceeded, "match_id", "left")
+                          .filter("flag_proceeded is null")
+                          .select("match_id")
+                          .orderBy("match_id", ascending=False)
+                          .distinct())
 
     else:
         print("Histórico de processo não encontrado")
