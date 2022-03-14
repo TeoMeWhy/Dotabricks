@@ -4,7 +4,7 @@
         "email_notifications": {},
         "name": "get_pro_matches",
         "schedule": {
-            "quartz_cron_expression": "48 0 * * * ?",
+            "quartz_cron_expression": "0 0 */6 * * ?",
             "timezone_id": "America/Sao_Paulo",
             "pause_status": "UNPAUSED"
         },
