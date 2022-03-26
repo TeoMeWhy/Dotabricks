@@ -35,6 +35,40 @@
                         "task_key": "get_pro_matches_new"
                     }
                 ]
+            },
+            {
+                "job_cluster_key": "get_pro_matches_cluster",
+                "notebook_task": {
+                    "notebook_path": "/Repos/pipelines/Dotabricks/raw/process_json_to_parquet",
+                    "base_parameters": {
+                        "table": "tb_pro_match_player"
+                    }
+                },
+                "timeout_seconds": 0,
+                "email_notifications": {},
+                "task_key": "tb_pro_match_player",
+                "depends_on": [
+                    {
+                        "task_key": "get_pro_matches_details"
+                    }
+                ]
+            },
+            {
+                "job_cluster_key": "get_pro_matches_cluster",
+                "notebook_task": {
+                    "notebook_path": "/Repos/pipelines/Dotabricks/raw/process_json_to_parquet",
+                    "base_parameters": {
+                        "table": "tb_pro_match"
+                    }
+                },
+                "timeout_seconds": 0,
+                "email_notifications": {},
+                "task_key": "tb_pro_match",
+                "depends_on": [
+                    {
+                        "task_key": "get_pro_matches_details"
+                    }
+                ]
             }
         ],
         "job_clusters": [
@@ -67,7 +101,7 @@
                         "PYSPARK_PYTHON": "/databricks/python3/bin/python3"
                     },
                     "enable_elastic_disk": true,
-                    "num_workers": 0
+                    "num_vcpus": 0
                 }
             }
         ]

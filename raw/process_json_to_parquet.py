@@ -20,11 +20,11 @@ def get_data(schema):
 def etl_match_player(df):
     df = (df.withColumn("players", F.explode("players") )
             .select("players.*")
-            .withColumn("match_datetime", F.from_unixtime(F.col("start_time"), "yyyy-MM")))
+            .withColumn("match_datetime", F.from_unixtime(F.col("start_time"), "yyyy-MM-dd")))
     return df
 
 def etl_match(df):
-    df = (df.withColumn("match_datetime", F.from_unixtime(F.col("start_time"), "yyyy-MM")))
+    df = (df.withColumn("match_datetime", F.from_unixtime(F.col("start_time"), "yyyy-MM-dd")))
     return df
 
 def upsert(df, batchId, etl, path):
@@ -64,3 +64,8 @@ stream = (df_stream.writeStream
 time.sleep(60)
 stream.processAllAvailable()
 stream.stop()
+
+# COMMAND ----------
+
+df = spark.read.format("delta").load(tb_path)
+df.display()
