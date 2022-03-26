@@ -78,30 +78,24 @@
                     "cluster_name": "",
                     "spark_version": "9.1.x-scala2.12",
                     "spark_conf": {
-                        "spark.databricks.cluster.profile": "singleNode",
-                        "spark.master": "local[*, 4]",
                         "spark.databricks.delta.autoCompact.enabled": "true",
-                        "spark.databricks.delta.properties.defaults.autoOptimize.autoCompact": "true",
-                        "spark.databricks.delta.optimizeWrite.enabled": "true",
-                        "spark.databricks.delta.properties.defaults.autoOptimize.optimizeWrite": "true"
+                        "spark.databricks.delta.optimizeWrite.enabled": "true"
                     },
                     "aws_attributes": {
                         "ebs_volume_count": 0,
                         "availability": "SPOT_WITH_FALLBACK",
                         "instance_profile_arn": "arn:aws:iam::026209986505:instance-profile/databricks-teomewhy-workspace-stack-access-data-buckets",
-                        "first_on_demand": 1,
+                        "first_on_demand": 0,
                         "zone_id": "us-east-1c"
                     },
                     "node_type_id": "m5d.large",
-                    "driver_node_type_id": "m5d.large",
-                    "custom_tags": {
-                        "ResourceClass": "SingleNode"
-                    },
                     "spark_env_vars": {
                         "PYSPARK_PYTHON": "/databricks/python3/bin/python3"
                     },
-                    "enable_elastic_disk": true,
-                    "num_vcpus": 0
+                    "autoscale": {
+                        "min_workers": 1,
+                        "max_workers": 3
+                    }
                 }
             }
         ]
