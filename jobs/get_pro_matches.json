@@ -78,8 +78,10 @@
                     "cluster_name": "",
                     "spark_version": "9.1.x-scala2.12",
                     "spark_conf": {
+                        "spark.databricks.delta.optimizeWrite.enabled": "true",
                         "spark.databricks.delta.autoCompact.enabled": "true",
-                        "spark.databricks.delta.optimizeWrite.enabled": "true"
+                        "spark.databricks.cluster.profile": "singleNode",
+                        "spark.master": "local[*, 4]"
                     },
                     "aws_attributes": {
                         "ebs_volume_count": 0,
@@ -89,13 +91,14 @@
                         "zone_id": "us-east-1c"
                     },
                     "node_type_id": "m5d.large",
+                    "driver_node_type_id": "m5d.large",
+                    "custom_tags": {
+                        "ResourceClass": "SingleNode"
+                    },
                     "spark_env_vars": {
                         "PYSPARK_PYTHON": "/databricks/python3/bin/python3"
                     },
-                    "autoscale": {
-                        "min_workers": 1,
-                        "max_workers": 3
-                    }
+                    "num_vcpus": 0
                 }
             }
         ]
