@@ -47,9 +47,11 @@ Como disse, o conteúdo é gratuíto, mas você pode rever os vídeos sendo um i
 
 Para realizar um projeto destes, há custos envolvidos para manter todo ambiente cloud. Assim, os valores adquiridos pelas assinaturas são utilizados para sanar estes custos.
 
-## Relatório de custos
-|Ano/Mês|AWS|Databricks|OpenDota API|
-|-|-|-|-|
-|02.2022|R$293.45 (U$55.98)|U$8.02|R$4,24 (U$0.79)|
+## Relatório de custos e receita
+|Ano/Mês|AWS|Databricks|OpenDota API|Twitch|Saldo|
+|:---:|---:|---:|---:|---:|---:|
+|02.2022|U$ -55.98 |U$ -8.02| U$ -0.79 | U$ +119.14 | U$ +54.35 |
+|03.2022|U$ -57.00 |U$ -12.41| U$ -14.34 | U$ +198.89 | U$ +115.14 |
+|Total|U$ -112,98 |U$ -20.43| U$ 15.13| U$ +318.03 | U$ +169,49 |
 
 - O principal custo da AWS é referente ao serviço de NAT. Como estamos usando máquinas Spot, o custo das máquinas ligadas é mínimo.
