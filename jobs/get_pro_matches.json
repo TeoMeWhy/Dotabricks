@@ -69,13 +69,30 @@
                         "task_key": "get_pro_matches_details"
                     }
                 ]
+            },
+            {
+                "job_cluster_key": "get_pro_matches_cluster",
+                "notebook_task": {
+                    "notebook_path": "/Repos/pipelines/Dotabricks/bronze/feature_store/execute_feature_store",
+                    "base_parameters": {
+                        "dt_ref": "{{start_date}}"
+                    }
+                },
+                "timeout_seconds": 0,
+                "email_notifications": {},
+                "task_key": "tb_feature_store_player_match",
+                "depends_on": [
+                    {
+                        "task_key": "tb_pro_match_player"
+                    }
+                ]
             }
         ],
         "job_clusters": [
             {
                 "num_workers": 0,
                 "cluster_name": "",
-                "spark_version": "9.1.x-scala2.12",
+                "spark_version": "10.4.x-scala2.12",
                 "spark_conf": {
                     "spark.master": "local[*, 4]",
                     "spark.databricks.cluster.profile": "singleNode",
