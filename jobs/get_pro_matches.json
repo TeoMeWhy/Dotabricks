@@ -75,7 +75,8 @@
                 "notebook_task": {
                     "notebook_path": "/Repos/pipelines/Dotabricks/bronze/feature_store/execute_feature_store",
                     "base_parameters": {
-                        "dt_ref": "{{start_date}}"
+                        "dt_start": "{{start_date}}"
+                        "dt_stop": "{{start_date}}",
                     }
                 },
                 "timeout_seconds": 0,
