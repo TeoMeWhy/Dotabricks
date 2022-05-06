@@ -50,8 +50,9 @@ Para realizar um projeto destes, há custos envolvidos para manter todo ambiente
 ## Relatório de custos e receita
 |Ano/Mês|AWS|Databricks|OpenDota API|Twitch|Saldo|
 |:---:|---:|---:|---:|---:|---:|
-|02.2022|U$ -55.98 |U$ -8.02| U$ -0.79 | U$ +119.14 | U$ +54.35 |
-|03.2022|U$ -57.00 |U$ -12.41| U$ -14.34 | U$ +198.89 | U$ +115.14 |
-|Total|U$ -112,98 |U$ -20.43| U$ 15.13| U$ +318.03 | U$ +169,49 |
+| 02/2022|U$ 55,98|U$ 8,02|U$ 0,79|U$ 119,14| U$ 54,35 |
+| 03/2022|U$ 57.00|U$ 12,41|U$ 14,34|U$ 198,89| U$ 115,14 |
+| 04/2022|U$ 50,91|U$ 2,28|U$ 0,79|U$ 219,06| U$ 165,08 |
+| Total|U$ 163,89|U$ 22,71|U$ 15,92|U$ 537,09| U$ 334,57 |
 
 - O principal custo da AWS é referente ao serviço de NAT. Como estamos usando máquinas Spot, o custo das máquinas ligadas é mínimo.
